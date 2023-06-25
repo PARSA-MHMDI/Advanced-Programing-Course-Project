@@ -1,57 +1,60 @@
 import sys
 import typing
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow ,QFileDialog
-from PyQt5.QtGui import QImage,QPainter,QPen,QCursor,QPixmap,QPainterPath,QBrush
-from PyQt5.QtCore import Qt,QPoint
-from  ui_paintUI import Ui_MainWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QPushButton, QMessageBox
+from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush
+from PyQt5.QtCore import Qt, QPoint
+from ui_paintUI import Ui_MainWindow
 import random
-from brushes import SolidBrush,Airbrush,CalligraphyBrush,OilBrush,CrayonBrush
+from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
 
 
 class Window(QMainWindow):
-    def __init__(self,app) :
+    def __init__(self, app):
         super().__init__()
 
-        self.ui=Ui_MainWindow()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        
+
         self.setWindowTitle("Paint with PyQt5")
         self.setGeometry(200, 100, 1000, 800)
-        
-        self.image=QImage(self.size(),QImage.Format.Format_RGB16)
+
+        self.image = QImage(self.size(), QImage.Format.Format_RGB16)
         self.image.fill(Qt.GlobalColor.white)
-        
+
         self.undo_stack = []
-        
-        self.drawing=False
-        self.brushSize=2
-        self.brushColor=Qt.GlobalColor.black
-        self.lastPoint=QPoint()
-        
+
+        self.drawing = False
+        self.brushSize = 2
+        self.brushColor = Qt.GlobalColor.black
+        self.lastPoint = QPoint()
+
         self.eraser_cursor = QCursor(QPixmap("eraser.jpg"))
-        self.eraser_mode=False
+        self.eraser_mode = False
         self.setCursor(Qt.CrossCursor)
-        #brushes   
-        self.round_brush = QPainterPath()  
-        self.round_brush.addEllipse(-self.brushSize/2, -self.brushSize/2, self.brushSize, self.brushSize)        
-        self.square_brush = QPainterPath()  
-        self.square_brush.addRect(-self.brushSize/2, -self.brushSize/2, self.brushSize, self.brushSize)
+        # brushes
+        self.round_brush = QPainterPath()
+        self.round_brush.addEllipse(-self.brushSize/2, -
+                                    self.brushSize/2, self.brushSize, self.brushSize)
+        self.square_brush = QPainterPath()
+        self.square_brush.addRect(-self.brushSize/2, -
+                                  self.brushSize/2, self.brushSize, self.brushSize)
         self.calligraphy_brush = QPainterPath()
-        self.calligraphy_brush.lineTo(self.brushSize / 2, self.brushSize / 2)       
-        self.spray_can_brush = QPainterPath() 
-        self.spray_can_brush.addEllipse(-self.brushSize / 2, -self.brushSize / 2, self.brushSize, self.brushSize)
-        self.brush_shape=self.spray_can_brush        
+        self.calligraphy_brush.lineTo(self.brushSize / 2, self.brushSize / 2)
+        self.spray_can_brush = QPainterPath()
+        self.spray_can_brush.addEllipse(-self.brushSize / 2, -
+                                        self.brushSize / 2, self.brushSize, self.brushSize)
+        self.brush_shape = self.spray_can_brush
         self.brushOptions = {
             "Solid Brush": SolidBrush,
             "Air Brush": Airbrush,
             "Calligraphy Brush": CalligraphyBrush,
             "Oil Brush": OilBrush,
             "Crayon Brush": CrayonBrush
-            }   
-        self.selectedBrush="Solid Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]             
-        #handling the signals
+        }
+        self.selectedBrush = "Solid Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
+        # handling the signals
         self.ui.actionSave.triggered.connect(self.save)
         self.ui.actionClear.triggered.connect(self.clear)
         self.ui.action3px.triggered.connect(self.three_pixel)
@@ -73,18 +76,23 @@ class Window(QMainWindow):
         self.ui.actionCalligraphy.triggered.connect(self.calligra_brush)
         self.ui.actionOil.triggered.connect(self.oil_brush)
         self.ui.actionCrayon.triggered.connect(self.crayon_brush)
-    
-    
-    def mousePressEvent(self,event):
-        if event.button()==Qt.MouseButton.LeftButton:
-            self.drawing=True
-            self.lastPoint=event.pos()
-            
-        self.undo_stack.append(self.image.copy())    
 
-        
-        
-            
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, "Exit Confirmation", "Are you sure you want to exit?",
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.drawing = True
+            self.lastPoint = event.pos()
+
+        self.undo_stack.append(self.image.copy())
+
+
 #     def mouseMoveEvent(self,event):
 #         if  (event.buttons() & Qt.MouseButton.LeftButton):
 #             painter=QPainter(self.image)
@@ -95,11 +103,10 @@ class Window(QMainWindow):
 #             path.moveTo(self.lastPoint)
 #             path.lineTo(event.pos())
 #             painter.drawPath(path)
-# # ```         painter.drawLine(self.lastPoint,event.pos()) 
+# # ```         painter.drawLine(self.lastPoint,event.pos())
 #             self.lastPoint=event.pos()
 #         self.update()
 
- 
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.LeftButton:
             # Create a QPainterPath object to store the brush stroke
@@ -134,25 +141,22 @@ class Window(QMainWindow):
             # Update the display
             self.update()
 
-
     def mouseReleaseEvent(self, event):
-        if event.button()==Qt.MouseButton.LeftButton:
-            self.drawing=False
-           
-               
-    
-    def paintEvent(self,event):
-        canvasPainter=QPainter(self)
-        canvasPainter.drawImage(self.rect(),self.image,self.image.rect())
-   
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.drawing = False
+
+    def paintEvent(self, event):
+        canvasPainter = QPainter(self)
+        canvasPainter.drawImage(self.rect(), self.image, self.image.rect())
+
     def set_eraser_mode(self, enabled):
         self.eraser_mode = enabled
 
         if enabled:
             self.setCursor(self.eraser_cursor)
         else:
-            self.setCursor(Qt.ArrowCursor)    
-    
+            self.setCursor(Qt.ArrowCursor)
+
     def undo(self):
         if len(self.undo_stack) > 0:
             # pop the previous image from the undo stack
@@ -163,66 +167,78 @@ class Window(QMainWindow):
 
             # redraw the image
             self.update()
-            
+
     def save(self):
-        filePath, _ =QFileDialog.getSaveFileName(self,"Save Image","","PNG(*.png);;JPEG(*.jpg,*.jpeg);;All Files(*.*)")
-        
-        if filePath=="":
+        filePath, _ = QFileDialog.getSaveFileName(
+            self, "Save Image", "", "PNG(*.png);;JPEG(*.jpg,*.jpeg);;All Files(*.*)")
+
+        if filePath == "":
             return
-        self.image.save(filePath)  
-        
+        self.image.save(filePath)
+
     def clear(self):
         self.image.fill(Qt.GlobalColor.white)
-        self.update()    
-        
+        self.update()
+
     def three_pixel(self):
-        self.brushSize=3    
+        self.brushSize = 3
+
     def five_pixel(self):
-        self.brushSize=5    
+        self.brushSize = 5
+
     def seven_pixel(self):
-        self.brushSize=7    
+        self.brushSize = 7
+
     def nine_pixel(self):
-        self.brushSize=9   
+        self.brushSize = 9
+
     def eleven_pixel(self):
-        self.brushSize=11    
+        self.brushSize = 11
+
     def thirteen_pixel(self):
-        self.brushSize=13 
-        
+        self.brushSize = 13
+
     def black(self):
-        self.brushColor=Qt.GlobalColor.black       
+        self.brushColor = Qt.GlobalColor.black
+
     def blue(self):
-        self.brushColor=Qt.GlobalColor.blue       
+        self.brushColor = Qt.GlobalColor.blue
+
     def red(self):
-        self.brushColor=Qt.GlobalColor.red       
+        self.brushColor = Qt.GlobalColor.red
+
     def green(self):
-        self.brushColor=Qt.GlobalColor.green      
+        self.brushColor = Qt.GlobalColor.green
+
     def yellow(self):
-        self.brushColor=Qt.GlobalColor.yellow   
-        
+        self.brushColor = Qt.GlobalColor.yellow
+
     def eraser(self):
-        count=0
-        if count % 2 ==0:
-           self.brushColor=Qt.GlobalColor.white
-           self.brushSize=20
+        count = 0
+        if count % 2 == 0:
+            self.brushColor = Qt.GlobalColor.white
+            self.brushSize = 20
         else:
-           self.brushColor=Qt.GlobalColor.black
-           self.brushSize=2
-        count +=count
-     
+            self.brushColor = Qt.GlobalColor.black
+            self.brushSize = 2
+        count += count
+
     def solid_brush(self):
-        self.selectedBrush="Solid Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]        
+        self.selectedBrush = "Solid Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
+
     def air_brush(self):
-        self.selectedBrush="Air Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]        
+        self.selectedBrush = "Air Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
+
     def calligra_brush(self):
-        self.selectedBrush="Calligraphy Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]        
+        self.selectedBrush = "Calligraphy Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
+
     def oil_brush(self):
-        self.selectedBrush="Oil Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]        
+        self.selectedBrush = "Oil Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
+
     def crayon_brush(self):
-        self.selectedBrush="Crayon Brush"
-        self.brushClass = self.brushOptions[self.selectedBrush]        
-            
-     
+        self.selectedBrush = "Crayon Brush"
+        self.brushClass = self.brushOptions[self.selectedBrush]
