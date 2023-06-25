@@ -1,0 +1,21 @@
+<RCC>
+  <qresource>
+    <file>images/black.png</file>
+    <file>images/blue.png</file>
+    <file>images/clear.jpg</file>
+    <file>images/eleven.png</file>
+    <file>images/eraser.jpg</file>
+    <file>images/exit 2.png</file>
+    <file>images/exit.jpg</file>
+    <file>images/five.png</file>
+    <file>images/green.png</file>
+    <file>images/nine.png</file>
+    <file>images/red.png</file>
+    <file>images/save.png</file>
+    <file>images/seven.png</file>
+    <file>images/thirteen.png</file>
+    <file>images/three.png</file>
+    <file>images/undo.png</file>
+    <file>images/yellow.png</file>
+  </qresource>
+</RCC>
