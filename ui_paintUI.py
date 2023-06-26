@@ -22,7 +22,7 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1098, 26))
         self.menubar.setObjectName("menubar")
-        self.menubar.setStyleSheet("background-color: #D8FAFA")        
+        self.menubar.setStyleSheet("background-color: #D8FAFA")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
         self.menuEdit = QtWidgets.QMenu(self.menubar)
@@ -35,6 +35,8 @@ class Ui_MainWindow(object):
         self.menuBrushes.setObjectName("menuBrushes")
         self.menuShapes = QtWidgets.QMenu(self.menubar)
         self.menuShapes.setObjectName("menuShapes")
+        self.menufilters = QtWidgets.QMenu(self.menubar)
+        self.menufilters.setObjectName("menufilters")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -192,6 +194,15 @@ class Ui_MainWindow(object):
         icon20 = QtGui.QIcon()
         icon20.addPixmap(QtGui.QPixmap(
             ":/images/roundedrectangle.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.actionBlackandWhite = QtWidgets.QAction(MainWindow)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./images/BlackandWhite.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionBlackandWhite.setIcon(icon)
+        self.actionBlackandWhite.setVisible(True)
+        self.actionBlackandWhite.setObjectName("actionBlackandWhite")
+
         self.actionRoundedRectangle.setIcon(icon20)
         self.actionRoundedRectangle.setObjectName("actionRoundedRectangle")
         self.menuFile.addAction(self.actionSave)
@@ -222,12 +233,15 @@ class Ui_MainWindow(object):
         self.menuShapes.addAction(self.actionline)
         self.menuShapes.addAction(self.actionArrow)
         self.menuShapes.addAction(self.actionRoundedRectangle)
+        self.menufilters.addAction(self.actionBlackandWhite)
+
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuBrushSize.menuAction())
         self.menubar.addAction(self.menuBrushColor.menuAction())
         self.menubar.addAction(self.menuBrushes.menuAction())
         self.menubar.addAction(self.menuShapes.menuAction())
+        self.menubar.addAction(self.menufilters.menuAction())
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionClear)
@@ -277,6 +291,7 @@ class Ui_MainWindow(object):
         self.menuBrushColor.setTitle(_translate("MainWindow", "BrushColor"))
         self.menuBrushes.setTitle(_translate("MainWindow", "Brushes"))
         self.menuShapes.setTitle(_translate("MainWindow", "Shapes"))
+        self.menufilters.setTitle(_translate("MainWindow", "filters"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.toolBar_2.setWindowTitle(_translate("MainWindow", "toolBar_2"))
 
@@ -321,6 +336,10 @@ class Ui_MainWindow(object):
         self.actionArrow.setText(_translate("MainWindow", "Arrow"))
         self.actionRoundedRectangle.setText(
             _translate("MainWindow", "RoundedRectangle"))
+
+        self.actionBlackandWhite.setText(
+            _translate("MainWindow", "Black & White"))
+        self.actionBlackandWhite.setShortcut(_translate("MainWindow", "Alt+B"))
 
 
 if __name__ == "__main__":

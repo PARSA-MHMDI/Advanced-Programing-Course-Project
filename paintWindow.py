@@ -9,6 +9,8 @@ import random
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
 from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle
 import math
+import cv2
+import numpy as np
 
 
 class Rectangle:
@@ -34,6 +36,7 @@ class Window(QMainWindow):
 
         self.image = QImage(self.size(), QImage.Format.Format_RGB16)
         self.image.fill(Qt.GlobalColor.white)
+        self.image_path = "./images/save.png"
 
         self.undo_stack = []
 
@@ -117,6 +120,8 @@ class Window(QMainWindow):
     # Parsa added ========================================
         # For silder
         self.ui.slider.valueChanged.connect(self.value_changed)
+        self.ui.actionBlackandWhite.triggered.connect(
+            lambda: self.apply_filter("BW"))
 
     def value_changed(self, value):
         self.brushSize = value
@@ -125,9 +130,9 @@ class Window(QMainWindow):
 
     def change_backgound_picutre(self):
         file_dialog = QFileDialog()
-        image_path, _ = file_dialog.getOpenFileName(
+        self.image_path, _ = file_dialog.getOpenFileName(
             self, "Select Image", "", "Image Files (*.png *.jpg *.jpeg)")
-        loaded_image = QtGui.QImage(image_path)
+        loaded_image = QtGui.QImage(self.image_path)
         self.image = loaded_image.scaled(self.size())
         self.update()
         # For Exit warrning
@@ -174,6 +179,12 @@ class Window(QMainWindow):
             Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
                                        pow((start.y() - end.y()), 2)), 1)
             self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
+    def apply_filter(self, mood):
+        if mood == "BW":
+            self.image = self.image.convertToFormat(
+                QtGui.QImage.Format_Grayscale8)
+        self.update()
 
     # End Parsa added======================================
 
