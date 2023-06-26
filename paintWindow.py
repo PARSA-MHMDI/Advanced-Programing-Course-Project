@@ -1,12 +1,25 @@
 import sys
 import typing
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QPushButton, QMessageBox
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QSize
 from ui_paintUI import Ui_MainWindow
 import random
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
+from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle
+import math
+
+
+class Rectangle:
+    def __init__(self, color, thickness):
+        self.color = color
+        self.thickness = thickness
+
+    def draw(self, painter, start_point, end_point):
+        rect = QRect(start_point, end_point)
+        painter.setPen(QPen(self.color, self.thickness))
+        painter.drawRect(rect)
 
 
 class Window(QMainWindow):
@@ -32,6 +45,15 @@ class Window(QMainWindow):
         self.eraser_cursor = QCursor(QPixmap("eraser.jpg"))
         self.eraser_mode = False
         self.setCursor(Qt.CrossCursor)
+
+        # shapes
+        self.rectangle_tool = False
+        self.circle_tool = False
+        self.line_tool = False
+        self.arrow_tool = False
+        self.roundedcircle_tool = False
+        self.shape_flag = False
+
         # brushes
         self.round_brush = QPainterPath()
         self.round_brush.addEllipse(-self.brushSize/2, -
@@ -76,7 +98,24 @@ class Window(QMainWindow):
         self.ui.actionCalligraphy.triggered.connect(self.calligra_brush)
         self.ui.actionOil.triggered.connect(self.oil_brush)
         self.ui.actionCrayon.triggered.connect(self.crayon_brush)
+        self.ui.actionRectangle.triggered.connect(self.set_rectangle_tool)
+        self.ui.actionCircle.triggered.connect(self.set_circle_tool)
+        self.ui.actionline.triggered.connect(self.set_line_tool)
+        self.ui.actionArrow.triggered.connect(self.set_arrow_tool)
+        self.ui.actionRoundedRectangle.triggered.connect(
+            self.set_roundedcircle_tool)
 
+    # Parsa added ========================================
+        # For silder
+        self.ui.slider.valueChanged.connect(self.value_changed)
+
+    def value_changed(self, value):
+        # print("Slider value:", value)
+        self.brushSize = value
+        self.ui.size_label.setText(f"Size is: {value} px")
+        self.ui.size_label.adjustSize()
+
+        # For Exit warrning
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "Exit Confirmation", "Are you sure you want to exit?",
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -84,66 +123,66 @@ class Window(QMainWindow):
             event.accept()
         else:
             event.ignore()
+    # End Parsa added======================================
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drawing = True
             self.lastPoint = event.pos()
 
+            self.startPoint = event.pos()
+
         self.undo_stack.append(self.image.copy())
-
-
-#     def mouseMoveEvent(self,event):
-#         if  (event.buttons() & Qt.MouseButton.LeftButton):
-#             painter=QPainter(self.image)
-#             painter.setPen(QPen(self.brushColor,self.brushSize,Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-#             painter.setBrush(QBrush(self.brushColor,Qt.Dense1Pattern))
-#             path = QPainterPath()
-#             path.addRect(-self.brushSize/2, -self.brushSize/2, self.brushSize, self.brushSize)
-#             path.moveTo(self.lastPoint)
-#             path.lineTo(event.pos())
-#             painter.drawPath(path)
-# # ```         painter.drawLine(self.lastPoint,event.pos())
-#             self.lastPoint=event.pos()
-#         self.update()
 
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.LeftButton:
-            # Create a QPainterPath object to store the brush stroke
-            path = QPainterPath()
-            path.moveTo(self.lastPoint)
+            if not self.shape_flag:
+                path = QPainterPath()
+                path.moveTo(self.lastPoint)
 
-            # Add a series of lines or curves to the path
-            for i in range(10):
-                # Calculate the direction and distance between the current and previous points
-                direction = event.pos() - self.lastPoint
-                distance = direction.manhattanLength()
+                for i in range(10):
+                    direction = event.pos() - self.lastPoint
+                    distance = direction.manhattanLength()
+                    t = i / 9
+                    point = self.lastPoint + direction * t
+                    path.quadTo(self.lastPoint, point)
+                    self.lastPoint = point
 
-                # Calculate the position of the new point along the path
-                t = i / 9
-                point = self.lastPoint + direction * t
+                self.brush = self.brushClass(self.brushColor, self.brushSize)
 
-                # Add a curved line segment to the path
-                path.quadTo(self.lastPoint, point)
+                painter = QPainter(self.image)
+                self.brush.draw(painter, path)
+                painter.end()
 
-                # Update the last point to the current point
-                self.lastPoint = point
-            # self.selectedBrush="Air Brush"
-            # # Create a brush object based on the current brush option
-            # brushClass = self.brushOptions[self.selectedBrush]
-            self.brush = self.brushClass(self.brushColor, self.brushSize)
-
-            # Create a QPainter object and draw the path using the brush
-            painter = QPainter(self.image)
-            self.brush.draw(painter, path)
-            painter.end()
-
-            # Update the display
-            self.update()
+        self.update()
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drawing = False
+
+            self.endPoint = event.pos()
+            self.radius = int(math.sqrt((self.endPoint.x() - self.startPoint.x())
+                              ** 2 + (self.endPoint.y() - self.startPoint.y()) ** 2) / 2)
+
+            # calculate center point as midpoint of start and end points
+            self.center_point = QPointF((self.startPoint.x(
+            ) + self.endPoint.x()) / 2, (self.startPoint.y() + self.endPoint.y()) / 2)
+
+            # convert center point to QPoint
+            self.center_point = QPoint(
+                int(self.center_point.x()), int(self.center_point.y()))
+
+        if self.shape_flag:
+            if self.rectangle_tool:
+                self.draw_rectangle(self.startPoint, self.endPoint)
+            elif self.circle_tool:
+                self.draw_circle(self.center_point, self.radius)
+            elif self.line_tool:
+                self.draw_line(self.startPoint, self.endPoint)
+            elif self.arrow_tool:
+                self.draw_arrow(self.startPoint, self.endPoint)
+            elif self.roundedcircle_tool:
+                self.draw_rounded_rectangle(self.startPoint, self.endPoint)
 
     def paintEvent(self, event):
         canvasPainter = QPainter(self)
@@ -178,6 +217,7 @@ class Window(QMainWindow):
 
     def clear(self):
         self.image.fill(Qt.GlobalColor.white)
+        self.undo_stack = []
         self.update()
 
     def three_pixel(self):
@@ -224,21 +264,101 @@ class Window(QMainWindow):
         count += count
 
     def solid_brush(self):
+        self.set_default()
         self.selectedBrush = "Solid Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
 
     def air_brush(self):
+        self.set_default()
+        self.set_default()
         self.selectedBrush = "Air Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
 
     def calligra_brush(self):
+        self.set_default()
+        self.set_default()
         self.selectedBrush = "Calligraphy Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
 
     def oil_brush(self):
+        self.set_default()
         self.selectedBrush = "Oil Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
 
     def crayon_brush(self):
+        self.set_default()
         self.selectedBrush = "Crayon Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
+
+    def set_default(self):
+        self.rectangle_tool = False
+        self.rectangle_tool = False
+        self.circle_tool = False
+        self.line_tool = False
+        self.arrow_tool = False
+        self.shape_flag = False
+
+    def set_rectangle_tool(self):
+        self.set_default()
+        self.rectangle_tool = True
+        self.shape_flag = True
+
+    def set_rectangle_tool(self):
+        self.set_default()
+        self.rectangle_tool = True
+        self.shape_flag = True
+
+    def set_circle_tool(self):
+        self.set_default()
+        self.circle_tool = True
+        self.shape_flag = True
+
+    def set_line_tool(self):
+        self.set_default()
+        self.line_tool = True
+        self.shape_flag = True
+
+    def set_arrow_tool(self):
+        self.set_default()
+        self.arrow_tool = True
+        self.shape_flag = True
+
+    def set_roundedcircle_tool(self):
+        self.set_default()
+        self.roundedcircle_tool = True
+        self.shape_flag = True
+
+    def draw_rectangle(self, start_point, end_point):
+        rect = Rectangle(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        rect.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+
+    def draw_circle(self, center_point, radius):
+        circle = Circle(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        circle.draw(painter, center_point, radius)
+        painter.end()
+        self.update()
+
+    def draw_line(self, start_point, end_point):
+        line = StraightLine(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        line.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+
+    def draw_arrow(self, start_point, end_point):
+        arrow = Arrow(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        arrow.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+
+    def draw_rounded_rectangle(self, start_point, end_point):
+        rect = RoundedRectangle(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        rect.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()

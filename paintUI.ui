@@ -69,11 +69,22 @@
     <addaction name="actionOil"/>
     <addaction name="actionCrayon"/>
    </widget>
+   <widget class="QMenu" name="menuShapes">
+    <property name="title">
+     <string>Shapes</string>
+    </property>
+    <addaction name="actionRectangle"/>
+    <addaction name="actionCircle"/>
+    <addaction name="actionline"/>
+    <addaction name="actionArrow"/>
+    <addaction name="actionRoundedRectangle"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuBrushSize"/>
    <addaction name="menuBrushColor"/>
    <addaction name="menuBrushes"/>
+   <addaction name="menuShapes"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -93,9 +104,25 @@
    <addaction name="actionUndo"/>
    <addaction name="actionErase"/>
   </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionRectangle"/>
+   <addaction name="actionCircle"/>
+   <addaction name="actionline"/>
+   <addaction name="actionArrow"/>
+   <addaction name="actionRoundedRectangle"/>
+  </widget>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
    </property>
    <property name="text">
@@ -110,7 +137,7 @@
   </action>
   <action name="actionClear">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/clear.jpg</normaloff>:/images/clear.jpg</iconset>
    </property>
    <property name="text">
@@ -122,7 +149,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/exit 2.png</normaloff>:/images/exit 2.png</iconset>
    </property>
    <property name="text">
@@ -134,7 +161,7 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/undo.png</normaloff>:/images/undo.png</iconset>
    </property>
    <property name="text">
@@ -146,7 +173,7 @@
   </action>
   <action name="actionErase">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/eraser.jpg</normaloff>:/images/eraser.jpg</iconset>
    </property>
    <property name="text">
@@ -158,7 +185,7 @@
   </action>
   <action name="action3px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/three.png</normaloff>:/images/three.png</iconset>
    </property>
    <property name="text">
@@ -170,7 +197,7 @@
   </action>
   <action name="action5px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/five.png</normaloff>:/images/five.png</iconset>
    </property>
    <property name="text">
@@ -182,7 +209,7 @@
   </action>
   <action name="action7px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/seven.png</normaloff>:/images/seven.png</iconset>
    </property>
    <property name="text">
@@ -194,7 +221,7 @@
   </action>
   <action name="action9px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/nine.png</normaloff>:/images/nine.png</iconset>
    </property>
    <property name="text">
@@ -206,7 +233,7 @@
   </action>
   <action name="action11px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/eleven.png</normaloff>:/images/eleven.png</iconset>
    </property>
    <property name="text">
@@ -215,7 +242,7 @@
   </action>
   <action name="action13px">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/thirteen.png</normaloff>:/images/thirteen.png</iconset>
    </property>
    <property name="text">
@@ -224,7 +251,7 @@
   </action>
   <action name="actionBlack">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/black.png</normaloff>:/images/black.png</iconset>
    </property>
    <property name="text">
@@ -233,7 +260,7 @@
   </action>
   <action name="actionBlue">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/blue.png</normaloff>:/images/blue.png</iconset>
    </property>
    <property name="text">
@@ -242,7 +269,7 @@
   </action>
   <action name="actionRed">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/red.png</normaloff>:/images/red.png</iconset>
    </property>
    <property name="text">
@@ -251,7 +278,7 @@
   </action>
   <action name="actionYellow">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/yellow.png</normaloff>:/images/yellow.png</iconset>
    </property>
    <property name="text">
@@ -260,7 +287,7 @@
   </action>
   <action name="actionGreen">
    <property name="icon">
-    <iconset resource="../app/resource.qrc">
+    <iconset resource="resource.qrc">
      <normaloff>:/images/green.png</normaloff>:/images/green.png</iconset>
    </property>
    <property name="text">
@@ -292,9 +319,54 @@
     <string>Crayon Brush</string>
    </property>
   </action>
+  <action name="actionRectangle">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/rectangle.png</normaloff>:/images/rectangle.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rectangle</string>
+   </property>
+  </action>
+  <action name="actionCircle">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/circle.png</normaloff>:/images/circle.png</iconset>
+   </property>
+   <property name="text">
+    <string>Circle</string>
+   </property>
+  </action>
+  <action name="actionline">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/line.png</normaloff>:/images/line.png</iconset>
+   </property>
+   <property name="text">
+    <string>line</string>
+   </property>
+  </action>
+  <action name="actionArrow">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/arrow.png</normaloff>:/images/arrow.png</iconset>
+   </property>
+   <property name="text">
+    <string>Arrow</string>
+   </property>
+  </action>
+  <action name="actionRoundedRectangle">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/roundedrectangle.png</normaloff>:/images/roundedrectangle.png</iconset>
+   </property>
+   <property name="text">
+    <string>RoundedRectangle</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../app/resource.qrc"/>
+  <include location="resource.qrc"/>
  </resources>
  <connections/>
 </ui>
