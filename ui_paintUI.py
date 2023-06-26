@@ -44,6 +44,16 @@ class Ui_MainWindow(object):
         self.toolBar_2 = QtWidgets.QToolBar(MainWindow)
         self.toolBar_2.setObjectName("toolBar_2")
         MainWindow.addToolBar(QtCore.Qt.LeftToolBarArea, self.toolBar_2)
+
+        # Load new backgorund - parsa added
+        self.actionChangeImage = QtWidgets.QAction(MainWindow)
+        icon0 = QtGui.QIcon()
+        icon0.addPixmap(QtGui.QPixmap("./images/change.png"),
+                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionChangeImage.setIcon(icon0)
+        self.actionChangeImage.setVisible(True)
+        self.actionChangeImage.setObjectName("change_image")
+
         self.actionSave = QtWidgets.QAction(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/images/save.png"),
@@ -184,6 +194,8 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionClear)
         self.menuFile.addAction(self.actionExit)
+        self.menuFile.addAction(self.actionChangeImage)
+
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionErase)
         self.menuBrushSize.addAction(self.action3px)
@@ -219,8 +231,10 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionExit)
         self.toolBar.addAction(self.actionUndo)
         self.toolBar.addAction(self.actionErase)
-
         # Parsa added ===========================
+
+        self.toolBar.addAction(self.actionChangeImage)
+
         self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.slider.setObjectName("horizontalSlider")
         self.slider.setFixedSize(150, 25)
@@ -229,6 +243,7 @@ class Ui_MainWindow(object):
         self.slider.setValue(1)  # Set the initial value
         self.toolBar.addWidget(self.slider)
         self.size_label = QtWidgets.QLabel("Size is: 1 px")
+        self.size_label.setAlignment(QtCore.Qt.AlignRight)
         self.toolBar.addWidget(self.size_label)
         # End Parsa added======================================
 
@@ -252,6 +267,11 @@ class Ui_MainWindow(object):
         self.menuShapes.setTitle(_translate("MainWindow", "Shapes"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.toolBar_2.setWindowTitle(_translate("MainWindow", "toolBar_2"))
+
+        self.actionChangeImage.setText(
+            _translate("MainWindow", "Change Image"))
+        self.actionChangeImage.setShortcut(_translate("MainWindow", "Ctrl+Q"))
+
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionSave.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.actionClear.setText(_translate("MainWindow", "Clear"))

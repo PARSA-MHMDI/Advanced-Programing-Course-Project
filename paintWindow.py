@@ -104,6 +104,8 @@ class Window(QMainWindow):
         self.ui.actionArrow.triggered.connect(self.set_arrow_tool)
         self.ui.actionRoundedRectangle.triggered.connect(
             self.set_roundedcircle_tool)
+        self.ui.actionChangeImage.triggered.connect(
+            self.change_backgound_picutre)
 
     # Parsa added ========================================
         # For silder
@@ -115,14 +117,23 @@ class Window(QMainWindow):
         self.ui.size_label.setText(f"Size is: {value} px")
         self.ui.size_label.adjustSize()
 
+    def change_backgound_picutre(self):
+        file_dialog = QFileDialog()
+        image_path, _ = file_dialog.getOpenFileName(
+            self, "Select Image", "", "Image Files (*.png *.jpg *.jpeg)")
+        loaded_image = QtGui.QImage(image_path)
+        self.image = loaded_image.scaled(self.size())
+        self.update()
         # For Exit warrning
+
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, "Exit Confirmation", "Are you sure you want to exit?",
+        reply = QMessageBox.question(self, "Exit Confirmation", "Do you want to save?",
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            event.accept()
-        else:
+            self.save()
             event.ignore()
+        else:
+            event.accept()
     # End Parsa added======================================
 
     def mousePressEvent(self, event):
