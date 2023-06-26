@@ -2,7 +2,7 @@ import sys
 import typing
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
-from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush
+from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush, QCloseEvent
 from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QSize
 from ui_paintUI import Ui_MainWindow
 import random
@@ -79,19 +79,26 @@ class Window(QMainWindow):
         # handling the signals
         self.ui.actionSave.triggered.connect(self.save)
         self.ui.actionClear.triggered.connect(self.clear)
-        self.ui.action3px.triggered.connect(self.three_pixel)
-        self.ui.action5px.triggered.connect(self.five_pixel)
-        self.ui.action7px.triggered.connect(self.seven_pixel)
-        self.ui.action9px.triggered.connect(self.nine_pixel)
-        self.ui.action11px.triggered.connect(self.eleven_pixel)
-        self.ui.action13px.triggered.connect(self.thirteen_pixel)
-        self.ui.actionBlack.triggered.connect(self.black)
-        self.ui.actionBlue.triggered.connect(self.blue)
-        self.ui.actionRed.triggered.connect(self.red)
-        self.ui.actionYellow.triggered.connect(self.yellow)
-        self.ui.actionGreen.triggered.connect(self.green)
+        self.ui.action3px.triggered.connect(lambda: self.change_brush_size(3))
+        self.ui.action5px.triggered.connect(lambda: self.change_brush_size(5))
+        self.ui.action7px.triggered.connect(lambda: self.change_brush_size(7))
+        self.ui.action9px.triggered.connect(lambda: self.change_brush_size(9))
+        self.ui.action11px.triggered.connect(
+            lambda: self.change_brush_size(11))
+        self.ui.action13px.triggered.connect(
+            lambda: self.change_brush_size(13))
+        self.ui.actionBlack.triggered.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.black))
+        self.ui.actionBlue.triggered.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.blue))
+        self.ui.actionRed.triggered.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.red))
+        self.ui.actionYellow.triggered.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.yellow))
+        self.ui.actionGreen.triggered.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.green))
         self.ui.actionErase.triggered.connect(self.eraser)
-        self.ui.actionExit.triggered.connect(sys.exit)
+        self.ui.actionExit.triggered.connect(self.closeEvent)
         self.ui.actionUndo.triggered.connect(self.undo)
         self.ui.actionSolid.triggered.connect(self.solid_brush)
         self.ui.actionAir.triggered.connect(self.air_brush)
@@ -112,7 +119,6 @@ class Window(QMainWindow):
         self.ui.slider.valueChanged.connect(self.value_changed)
 
     def value_changed(self, value):
-        # print("Slider value:", value)
         self.brushSize = value
         self.ui.size_label.setText(f"Size is: {value} px")
         self.ui.size_label.adjustSize()
@@ -131,9 +137,10 @@ class Window(QMainWindow):
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.save()
-            event.ignore()
+            if type(event) == bool:  # For pushing exit button
+                sys.exit()
         else:
-            event.accept()
+            sys.exit()
 
     def find_length(self, start, end, kind: str):
         """This function will find length of each shape
@@ -265,45 +272,19 @@ class Window(QMainWindow):
         self.undo_stack = []
         self.update()
 
-    def three_pixel(self):
-        self.brushSize = 3
+    def change_brush_size(self, size):
+        self.value_changed(size)
+        self.ui.slider.setValue(size)  # For changing slider value
 
-    def five_pixel(self):
-        self.brushSize = 5
-
-    def seven_pixel(self):
-        self.brushSize = 7
-
-    def nine_pixel(self):
-        self.brushSize = 9
-
-    def eleven_pixel(self):
-        self.brushSize = 11
-
-    def thirteen_pixel(self):
-        self.brushSize = 13
-
-    def black(self):
-        self.brushColor = Qt.GlobalColor.black
-
-    def blue(self):
-        self.brushColor = Qt.GlobalColor.blue
-
-    def red(self):
-        self.brushColor = Qt.GlobalColor.red
-
-    def green(self):
-        self.brushColor = Qt.GlobalColor.green
-
-    def yellow(self):
-        self.brushColor = Qt.GlobalColor.yellow
+    def change_brush_color(self, color):
+        self.brushColor = color
 
     def eraser(self):
         self.set_default()
         self.brushColor = Qt.GlobalColor.white
         self.brushSize = 15
         self.brushClass = self.brushOptions["Solid Brush"]
-       
+
     def solid_brush(self):
         self.set_default()
         self.selectedBrush = "Solid Brush"
