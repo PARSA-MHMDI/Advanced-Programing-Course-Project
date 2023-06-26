@@ -242,9 +242,18 @@ class Ui_MainWindow(object):
         self.slider.setMaximum(50)  # Set the maximum value
         self.slider.setValue(1)  # Set the initial value
         self.toolBar.addWidget(self.slider)
+
+        self.toolBar.addSeparator()
+
         self.size_label = QtWidgets.QLabel("Size is: 1 px")
-        self.size_label.setAlignment(QtCore.Qt.AlignRight)
+        self.size_label.setAlignment(QtCore.Qt.AlignCenter)
         self.toolBar.addWidget(self.size_label)
+
+        self.toolBar.addSeparator()
+
+        self.length_label = QtWidgets.QLabel()
+        self.length_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.toolBar.addWidget(self.length_label)
         # End Parsa added======================================
 
         self.toolBar_2.addAction(self.actionRectangle)

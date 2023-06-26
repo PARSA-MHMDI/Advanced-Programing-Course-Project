@@ -134,6 +134,40 @@ class Window(QMainWindow):
             event.ignore()
         else:
             event.accept()
+
+    def find_length(self, start, end, kind: str):
+        """This function will find length of each shape
+
+        Args:
+            start (PyQt5.QtCore.QPoint): start point
+            end (PyQt5.QtCore.QPoint): End point or Radius
+            kind (str): name of shape
+        """
+
+        if kind == "StraightLine":
+            length = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                     pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"length is: {length}")
+
+        elif kind == "Rectangle":
+            Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                       pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
+        elif kind == "Circle":
+            Radius = end
+            self.ui.length_label.setText(f"Radius is: {Radius}")
+
+        elif kind == "Arrow":
+            length = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                     pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"length is: {length}")
+
+        elif kind == "RoundedRectangle":
+            Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                       pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
     # End Parsa added======================================
 
     def mousePressEvent(self, event):
@@ -345,6 +379,7 @@ class Window(QMainWindow):
         rect.draw(painter, start_point, end_point)
         painter.end()
         self.update()
+        self.find_length(start_point, end_point, "Rectangle")
 
     def draw_circle(self, center_point, radius):
         circle = Circle(self.brushColor, self.brushSize)
@@ -352,6 +387,7 @@ class Window(QMainWindow):
         circle.draw(painter, center_point, radius)
         painter.end()
         self.update()
+        self.find_length(center_point, radius, "Circle")
 
     def draw_line(self, start_point, end_point):
         line = StraightLine(self.brushColor, self.brushSize)
@@ -359,6 +395,7 @@ class Window(QMainWindow):
         line.draw(painter, start_point, end_point)
         painter.end()
         self.update()
+        self.find_length(start_point, end_point, "StraightLine")
 
     def draw_arrow(self, start_point, end_point):
         arrow = Arrow(self.brushColor, self.brushSize)
@@ -366,6 +403,7 @@ class Window(QMainWindow):
         arrow.draw(painter, start_point, end_point)
         painter.end()
         self.update()
+        self.find_length(start_point, end_point, "Arrow")
 
     def draw_rounded_rectangle(self, start_point, end_point):
         rect = RoundedRectangle(self.brushColor, self.brushSize)
@@ -373,3 +411,4 @@ class Window(QMainWindow):
         rect.draw(painter, start_point, end_point)
         painter.end()
         self.update()
+        self.find_length(start_point, end_point, "RoundedRectangle")
