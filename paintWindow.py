@@ -299,15 +299,11 @@ class Window(QMainWindow):
         self.brushColor = Qt.GlobalColor.yellow
 
     def eraser(self):
-        count = 0
-        if count % 2 == 0:
-            self.brushColor = Qt.GlobalColor.white
-            self.brushSize = 20
-        else:
-            self.brushColor = Qt.GlobalColor.black
-            self.brushSize = 2
-        count += count
-
+        self.set_default()
+        self.brushColor = Qt.GlobalColor.white
+        self.brushSize = 15
+        self.brushClass = self.brushOptions["Solid Brush"]
+       
     def solid_brush(self):
         self.set_default()
         self.selectedBrush = "Solid Brush"

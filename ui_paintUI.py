@@ -22,6 +22,7 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1098, 26))
         self.menubar.setObjectName("menubar")
+        self.menubar.setStyleSheet("background-color: #D8FAFA")        
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
         self.menuEdit = QtWidgets.QMenu(self.menubar)
@@ -43,6 +44,8 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.toolBar_2 = QtWidgets.QToolBar(MainWindow)
         self.toolBar_2.setObjectName("toolBar_2")
+        self.toolBar.setStyleSheet("background-color: #D8FAFA")
+        self.toolBar_2.setStyleSheet("background-color: #D8FAFA")
         MainWindow.addToolBar(QtCore.Qt.LeftToolBarArea, self.toolBar_2)
 
         # Load new backgorund - parsa added
