@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush, QCloseEvent
 from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QSize
-from ui_paintUI import Ui_MainWindow
+from newUI import Ui_MainWindow
 import random
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
 from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle
@@ -32,7 +32,7 @@ class Window(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowTitle("Paint with PyQt5")
-        self.setGeometry(200, 100, 1000, 800)
+        self.setGeometry(200, 100, 800, 600)
 
         self.image = QImage(self.size(), QImage.Format.Format_RGB16)
         self.image.fill(Qt.GlobalColor.white)
@@ -114,19 +114,57 @@ class Window(QMainWindow):
         self.ui.actionArrow.triggered.connect(self.set_arrow_tool)
         self.ui.actionRoundedRectangle.triggered.connect(
             self.set_roundedcircle_tool)
-        self.ui.actionChangeImage.triggered.connect(
+        self.ui.loadimage_Button.triggered.connect(
             self.change_backgound_picutre)
 
     # Parsa added ========================================
-        # For silder
-        self.ui.slider.valueChanged.connect(self.value_changed)
-        self.ui.actionBlackandWhite.triggered.connect(
+        self.ui.actionBlack_and_White.triggered.connect(
             lambda: self.apply_filter("BW"))
+        self.ui.clear_Button.clicked.connect(self.clear)
+        self.ui.undo_Button.clicked.connect(self.undo)
+        self.ui.redo_Button.clicked.connect(self.redo)
+        self.ui.save_Button.clicked.connect(self.save)
+        self.ui.text_Button.clicked.connect(self.text)
+        self.ui.pen_Button.clicked.connect(self.solid_brush)
+        self.ui.erase_Button.clicked.connect(self.eraser)
+        self.ui.zoom_Button.clicked.connect(self.zoom_Button)
+        self.ui.line_Button.clicked.connect(self.set_line_tool)
+        self.ui.rect_Button.clicked.connect(self.set_rectangle_tool)
+        self.ui.circul_Button.clicked.connect(self.set_circle_tool)
+        self.ui.arrow_Button.clicked.connect(self.set_arrow_tool)
+        self.ui.roundrect_Button.clicked.connect(self.set_roundedcircle_tool)
+        self.ui.blue_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.blue))
+        self.ui.back_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.black))
+        self.ui.all_color_Button.clicked.connect(self.all_color)
+        self.ui.red_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.red))
+        self.ui.green_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.green))
+        self.ui.white_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.white))
+        self.ui.yellow_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.yellow))
+        self.ui.pen_Button_2.clicked.connect(self.solid_brush)
+        self.ui.air_Button.clicked.connect(self.air_brush)
+        self.ui.oil_Button.clicked.connect(self.oil_brush)
+        self.ui.clalligraphy_Button.clicked.connect(self.calligra_brush)
+        self.ui.crayon_Button.clicked.connect(self.crayon_brush)
+        self.ui.size_Slider.valueChanged.connect(self.value_changed)
+        self.ui.crayon_Button.clicked.connect(self.flip_Button)
+        self.ui.loadimage_Button.clicked.connect(self.change_backgound_picutre)
+        self.ui.crop_Button.clicked.connect(self.crop)
+        self.ui.rotate_Button.clicked.connect(self.rotate)
+        self.ui.loadimage_Button_2.clicked.connect(
+            lambda: self.apply_filter("orginal"))
+        self.ui.invert_Button.clicked.connect(
+            lambda: self.apply_filter("invert"))
 
     def value_changed(self, value):
         self.brushSize = value
-        self.ui.size_label.setText(f"Size is: {value} px")
-        self.ui.size_label.adjustSize()
+        self.ui.size_label_toolbar.setText(f"Size is: {value} px")
+        self.ui.size_label_toolbar.adjustSize()
 
     def change_backgound_picutre(self):
         file_dialog = QFileDialog()
@@ -184,6 +222,10 @@ class Window(QMainWindow):
         if mood == "BW":
             self.image = self.image.convertToFormat(
                 QtGui.QImage.Format_Grayscale8)
+        elif mood == "orginal":
+            pass
+        elif mood == "invert":
+            pass
         self.update()
 
     # End Parsa added======================================
@@ -270,6 +312,29 @@ class Window(QMainWindow):
             # redraw the image
             self.update()
 
+    # Parsa Added
+    def redo(self):
+        pass
+
+    def text(self):
+        pass
+
+    def zoom_Button(self):
+        pass
+
+    def all_color(self):
+        pass
+
+    def flip_Button(self):
+        pass
+
+    def crop(self):
+        pass
+
+    def rotate(self):
+        pass
+    # End Parsa Added
+
     def save(self):
         filePath, _ = QFileDialog.getSaveFileName(
             self, "Save Image", "", "PNG(*.png);;JPEG(*.jpg,*.jpeg);;All Files(*.*)")
@@ -285,7 +350,7 @@ class Window(QMainWindow):
 
     def change_brush_size(self, size):
         self.value_changed(size)
-        self.ui.slider.setValue(size)  # For changing slider value
+        self.ui.size_Slider.setValue(size)  # For changing slider value
 
     def change_brush_color(self, color):
         self.brushColor = color

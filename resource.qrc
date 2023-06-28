@@ -1,10 +1,29 @@
 <RCC>
   <qresource>
+    <file>images/Screenshot (571).png</file>
+    <file>images/air.png</file>
+    <file>images/clighraphy.jpg</file>
+    <file>images/crayon.png</file>
+    <file>images/oil_brush.png</file>
+    <file>images/image.png</file>
+    <file>images/invert_color.png</file>
+    <file>images/crop.png</file>
+    <file>images/flip.png</file>
+    <file>images/rotate.png</file>
+    <file>images/white.png</file>
+    <file>images/white.png</file>
+    <file>images/zoom.jpg</file>
+    <file>images/text.png</file>
+    <file>images/pen.png</file>
+    <file>images/redo.png</file>
     <file>images/arrow.png</file>
     <file>images/black.png</file>
+    <file>images/BlackandWhite.png</file>
     <file>images/blue.png</file>
+    <file>images/change.png</file>
     <file>images/circle.png</file>
     <file>images/clear.jpg</file>
+    <file>images/colorpalette.png</file>
     <file>images/eleven.png</file>
     <file>images/eraser.jpg</file>
     <file>images/exit 2.png</file>
