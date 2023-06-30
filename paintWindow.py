@@ -117,6 +117,7 @@ class Window(QMainWindow):
         self.ui.zoom_Button.clicked.connect(lambda: self.zoom(110))
 
     # Parsa added ========================================
+        self.ui.actioncolor_palette.triggered.connect(self.selectColor)
         self.ui.actionredo.triggered.connect(self.redo)
         self.ui.actionBlack_and_White.triggered.connect(
             lambda: self.apply_filter("BW"))
@@ -171,6 +172,7 @@ class Window(QMainWindow):
             lambda: self.apply_filter("invert"))
 
         # =================== Change UI ================================
+        # Adding some labels to bottom toolbar
         self.ui.toolBar.addSeparator()
 
         self.ui.size_label_toolbar = QtWidgets.QLabel("Size is: 1 px")
@@ -185,7 +187,31 @@ class Window(QMainWindow):
         self.ui.toolBar.addWidget(self.ui.length_label)
 
         self.ui.toolBar_2.setStyleSheet(
+            "background-color: rgb(230, 230, 230);")
+
+        self.ui.toolBar.setStyleSheet(
+            "background-color: rgb(230, 230, 230);")
+
+        self.ui.toolBar.addSeparator()
+
+        self.pos_label = QtWidgets.QLabel()
+        self.pos_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.pos_label.setObjectName("pos_label")
+        self.pos_label.setText(" Mouse position is: ")
+        self.ui.toolBar.addWidget(self.pos_label)
+
+        # In here we want to set Icon for appication
+        app_icon = QtGui.QIcon()
+        app_icon.addPixmap(QtGui.QPixmap("./images/paint.png"),
+                           QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.setWindowIcon(app_icon)
+
+        # Changing background of spinBox to white
+        self.ui.width_spinBox.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
+        self.ui.height_spinBox.setStyleSheet(
+            "background-color: rgb(255, 255, 255);")
+
         # ===================================================
 
     def value_changed(self, value):
@@ -204,13 +230,16 @@ class Window(QMainWindow):
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "Exit Confirmation", "Do you want to save?",
-                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                     QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Yes)
         if reply == QMessageBox.Yes:
             self.save()
             if type(event) == bool:  # For pushing exit button
                 sys.exit()
-        else:
+        elif reply == QMessageBox.No:
             sys.exit()
+
+        elif reply == QMessageBox.Cancel:
+            event.ignore()
 
     def find_length(self, start, end, kind: str):
         """This function will find length of each shape
@@ -286,6 +315,10 @@ class Window(QMainWindow):
 
         self.undo_stack.append(self.image.copy())
 
+        # This line is for updating mouse position
+        self.pos_label.setText(
+            f" Mouse position is: X:{event.pos().x()}, Y:{event.pos().y()}")
+
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.LeftButton:
             if not self.shape_flag:
@@ -305,6 +338,10 @@ class Window(QMainWindow):
                 painter = QPainter(self.image)
                 self.brush.draw(painter, path)
                 painter.end()
+
+        # This line is for updating mouse position
+        self.pos_label.setText(
+            f" Mouse position is: X:{event.pos().x()}, Y:{event.pos().y()}")
 
         self.update()
 
