@@ -52,6 +52,7 @@ class Window(QMainWindow):
         self.hexagon_tool = False
         self.shape_flag = False
         self.text_flag = False
+        self.text_created = False
 
         # brushes
         self.round_brush = QPainterPath()
@@ -384,6 +385,7 @@ class Window(QMainWindow):
             f" Mouse position is: X:{event.pos().x()}, Y:{event.pos().y()}")
 
         if self.text_flag:
+            self.text_created = True
             text, ok = QtWidgets.QInputDialog.getText(
                 self, 'Enter Text', 'Enter your text:')
             if ok:
@@ -397,6 +399,7 @@ class Window(QMainWindow):
             self.text_flag = False
 
     def draw_text(self, text_box):
+        self.text_created = True
         # Draw the text on the canvas
         painter = QPainter(self.image)
         painter.setPen(QPen(self.brushColor, self.brushSize,
@@ -545,12 +548,14 @@ class Window(QMainWindow):
     def clear(self):
         self.image.fill(Qt.GlobalColor.white)
         # Clear the text
-        self.text_box.clear()
-        # self.text_box.setPlainText("")  # Clear the text edit
-        self.text_box.hide()  # Hide the text edit widget
+        if self.text_created:
+            self.text_box.clear()
+            # self.text_box.setPlainText("")  # Clear the text edit
+            self.text_box.hide()  # Hide the text edit widget
 
-        self.text_flag = False  # Reset the text flag
-        self.undo_stack = []
+            self.text_flag = False  # Reset the text flag
+            self.text_created = False
+            self.undo_stack = []
         self.update()
 
     def change_brush_size(self, size):
