@@ -1,27 +1,14 @@
 import sys
-import typing
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog
 from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush, QCloseEvent
-from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QSize
+from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSizeF
 from newUI import Ui_MainWindow
-import random
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
-from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle
+from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle, Ellipse, Triangle, Pentagon, Hexagon
 import math
 import cv2
 import numpy as np
-
-
-class Rectangle:
-    def __init__(self, color, thickness):
-        self.color = color
-        self.thickness = thickness
-
-    def draw(self, painter, start_point, end_point):
-        rect = QRect(start_point, end_point)
-        painter.setPen(QPen(self.color, self.thickness))
-        painter.drawRect(rect)
 
 
 class Window(QMainWindow):
@@ -32,13 +19,17 @@ class Window(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowTitle("Paint with PyQt5")
-        self.setGeometry(200, 100, 800, 600)
+        self.setGeometry(200, 100, 1400, 850)
 
         self.image = QImage(self.size(), QImage.Format.Format_RGB16)
         self.image.fill(Qt.GlobalColor.white)
         self.image_path = "./images/save.png"
-
+        # undo redo
         self.undo_stack = []
+        self.redo_stack = []
+        # zoom
+        self.zoom_level = 100
+        self.zoom_mode = False
 
         self.drawing = False
         self.brushSize = 2
@@ -55,6 +46,10 @@ class Window(QMainWindow):
         self.line_tool = False
         self.arrow_tool = False
         self.roundedcircle_tool = False
+        self.ellipse_tool = False
+        self.triangle_tool = False
+        self.pentagon_tool = False
+        self.hexagon_tool = False
         self.shape_flag = False
 
         # brushes
@@ -116,28 +111,33 @@ class Window(QMainWindow):
             self.set_roundedcircle_tool)
         self.ui.loadimage_Button.triggered.connect(
             self.change_backgound_picutre)
+        self.ui.pen_Button.clicked.connect(self.set_pen)
+        self.ui.redo_Button.clicked.connect(self.redo)
+        self.ui.all_color_Button.clicked.connect(self.selectColor)
+        self.ui.zoom_Button.clicked.connect(lambda: self.zoom(110))
 
     # Parsa added ========================================
+        self.ui.actionredo.triggered.connect(self.redo)
         self.ui.actionBlack_and_White.triggered.connect(
             lambda: self.apply_filter("BW"))
         self.ui.clear_Button.clicked.connect(self.clear)
         self.ui.undo_Button.clicked.connect(self.undo)
-        self.ui.redo_Button.clicked.connect(self.redo)
         self.ui.save_Button.clicked.connect(self.save)
         self.ui.text_Button.clicked.connect(self.text)
-        self.ui.pen_Button.clicked.connect(self.solid_brush)
         self.ui.erase_Button.clicked.connect(self.eraser)
-        self.ui.zoom_Button.clicked.connect(self.zoom_Button)
         self.ui.line_Button.clicked.connect(self.set_line_tool)
         self.ui.rect_Button.clicked.connect(self.set_rectangle_tool)
         self.ui.circul_Button.clicked.connect(self.set_circle_tool)
         self.ui.arrow_Button.clicked.connect(self.set_arrow_tool)
-        self.ui.roundrect_Button.clicked.connect(self.set_roundedcircle_tool)
+        self.ui.ellipse_Button.clicked.connect(self.set_ellipse_tool)
+        self.ui.triangle_Button.clicked.connect(self.set_triangle_tool)
+        self.ui.pentagon_Button.clicked.connect(self.set_pentagon_tool)
+        self.ui.hexagon_Button.clicked.connect(self.set_hexagon_tool)
+
         self.ui.blue_Button.clicked.connect(
             lambda: self.change_brush_color(Qt.GlobalColor.blue))
         self.ui.back_Button.clicked.connect(
             lambda: self.change_brush_color(Qt.GlobalColor.black))
-        self.ui.all_color_Button.clicked.connect(self.all_color)
         self.ui.red_Button.clicked.connect(
             lambda: self.change_brush_color(Qt.GlobalColor.red))
         self.ui.green_Button.clicked.connect(
@@ -146,6 +146,15 @@ class Window(QMainWindow):
             lambda: self.change_brush_color(Qt.GlobalColor.white))
         self.ui.yellow_Button.clicked.connect(
             lambda: self.change_brush_color(Qt.GlobalColor.yellow))
+        self.ui.purple_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.darkMagenta))
+        self.ui.pink_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.magenta))
+        self.ui.darkYellow_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.darkYellow))
+        self.ui.lightGray_Button.clicked.connect(
+            lambda: self.change_brush_color(Qt.GlobalColor.lightGray))
+
         self.ui.pen_Button_2.clicked.connect(self.solid_brush)
         self.ui.air_Button.clicked.connect(self.air_brush)
         self.ui.oil_Button.clicked.connect(self.oil_brush)
@@ -160,6 +169,24 @@ class Window(QMainWindow):
             lambda: self.apply_filter("orginal"))
         self.ui.invert_Button.clicked.connect(
             lambda: self.apply_filter("invert"))
+
+        # =================== Change UI ================================
+        self.ui.toolBar.addSeparator()
+
+        self.ui.size_label_toolbar = QtWidgets.QLabel("Size is: 1 px")
+        self.ui.size_label_toolbar.adjustSize()
+        self.ui.size_label_toolbar.setAlignment(QtCore.Qt.AlignCenter)
+        self.ui.toolBar.addWidget(self.ui.size_label_toolbar)
+
+        self.ui.toolBar.addSeparator()
+
+        self.ui.length_label = QtWidgets.QLabel()
+        self.ui.length_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ui.toolBar.addWidget(self.ui.length_label)
+
+        self.ui.toolBar_2.setStyleSheet(
+            "background-color: rgb(255, 255, 255);")
+        # ===================================================
 
     def value_changed(self, value):
         self.brushSize = value
@@ -214,6 +241,26 @@ class Window(QMainWindow):
             self.ui.length_label.setText(f"length is: {length}")
 
         elif kind == "RoundedRectangle":
+            Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                       pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
+        elif kind == "Ellipse":
+            Radius = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                     pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Radius is: {Radius}")
+
+        elif kind == "Triangle":
+            Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                       pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
+        elif kind == "Pentagon":
+            Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
+                                       pow((start.y() - end.y()), 2)), 1)
+            self.ui.length_label.setText(f"Diameter is: {Diameter}")
+
+        elif kind == "Hexagon":
             Diameter = round(math.sqrt(pow((start.x() - end.x()), 2) +
                                        pow((start.y() - end.y()), 2)), 1)
             self.ui.length_label.setText(f"Diameter is: {Diameter}")
@@ -288,10 +335,19 @@ class Window(QMainWindow):
                 self.draw_arrow(self.startPoint, self.endPoint)
             elif self.roundedcircle_tool:
                 self.draw_rounded_rectangle(self.startPoint, self.endPoint)
+            elif self.ellipse_tool:
+                self.draw_ellipse(self.startPoint, self.endPoint)
+            elif self.triangle_tool:
+                self.draw_triangle(self.startPoint, self.endPoint)
+            elif self.hexagon_tool:
+                self.draw_hexagon(self.startPoint, self.endPoint)
+            elif self.pentagon_tool:
+                self.draw_pentagon(self.startPoint, self.endPoint)
 
     def paintEvent(self, event):
-        canvasPainter = QPainter(self)
-        canvasPainter.drawImage(self.rect(), self.image, self.image.rect())
+        painter = QPainter(self)
+        painter.drawImage(self.rect(), self.get_zoomed_image(),
+                          self.get_zoomed_image().rect())
 
     def set_eraser_mode(self, enabled):
         self.eraser_mode = enabled
@@ -303,26 +359,23 @@ class Window(QMainWindow):
 
     def undo(self):
         if len(self.undo_stack) > 0:
-            # pop the previous image from the undo stack
             prev_image = self.undo_stack.pop()
+            self.redo_stack.append(self.image.copy())
 
-            # set the current image to the previous image
             self.image = prev_image.copy()
 
-            # redraw the image
+            self.update()
+
+    def redo(self):
+        if len(self.redo_stack) > 0:
+            next_image = self.redo_stack.pop()
+            self.undo_stack.append(self.image.copy())
+            self.image = next_image.copy()
             self.update()
 
     # Parsa Added
-    def redo(self):
-        pass
 
     def text(self):
-        pass
-
-    def zoom_Button(self):
-        pass
-
-    def all_color(self):
         pass
 
     def flip_Button(self):
@@ -368,7 +421,6 @@ class Window(QMainWindow):
 
     def air_brush(self):
         self.set_default()
-        self.set_default()
         self.selectedBrush = "Air Brush"
         self.brushClass = self.brushOptions[self.selectedBrush]
 
@@ -389,17 +441,17 @@ class Window(QMainWindow):
         self.brushClass = self.brushOptions[self.selectedBrush]
 
     def set_default(self):
-        self.rectangle_tool = False
+        self.zoom_mode = False
         self.rectangle_tool = False
         self.circle_tool = False
         self.line_tool = False
         self.arrow_tool = False
         self.shape_flag = False
-
-    def set_rectangle_tool(self):
-        self.set_default()
-        self.rectangle_tool = True
-        self.shape_flag = True
+        self.roundedcircle_tool = False
+        self.ellipse_tool = False
+        self.triangle_tool = False
+        self.pentagon_tool = False
+        self.hexagon_tool = False
 
     def set_rectangle_tool(self):
         self.set_default()
@@ -424,6 +476,26 @@ class Window(QMainWindow):
     def set_roundedcircle_tool(self):
         self.set_default()
         self.roundedcircle_tool = True
+        self.shape_flag = True
+
+    def set_ellipse_tool(self):
+        self.set_default()
+        self.ellipse_tool = True
+        self.shape_flag = True
+
+    def set_triangle_tool(self):
+        self.set_default()
+        self.triangle_tool = True
+        self.shape_flag = True
+
+    def set_pentagon_tool(self):
+        self.set_default()
+        self.pentagon_tool = True
+        self.shape_flag = True
+
+    def set_hexagon_tool(self):
+        self.set_default()
+        self.hexagon_tool = True
         self.shape_flag = True
 
     def draw_rectangle(self, start_point, end_point):
@@ -465,3 +537,88 @@ class Window(QMainWindow):
         painter.end()
         self.update()
         self.find_length(start_point, end_point, "RoundedRectangle")
+
+    def draw_ellipse(self, start_point, end_point):
+        ellipse = Ellipse(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        ellipse.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+        self.find_length(start_point, end_point, "Ellipse")
+
+    def draw_triangle(self, start_point, end_point):
+        triangle = Triangle(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        triangle.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+        self.find_length(start_point, end_point, "Triangle")
+
+    def draw_pentagon(self, start_point, end_point):
+        pentagon = Pentagon(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        pentagon.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+        self.find_length(start_point, end_point, "Pentagon")
+
+    def draw_hexagon(self, start_point, end_point):
+        hexagon = Hexagon(self.brushColor, self.brushSize)
+        painter = QPainter(self.image)
+        hexagon.draw(painter, start_point, end_point)
+        painter.end()
+        self.update()
+        self.find_length(start_point, end_point, "Hexagon")
+
+    def set_pen(self):
+        self.zoom(100)
+        self.set_default()
+        self.brushColor = Qt.GlobalColor.black
+        self.brushSize = 2
+        self.brushClass = self.brushOptions["Solid Brush"]
+
+    def selectColor(self):
+        color = QColorDialog.getColor(
+            self.brushColor, self, options=QColorDialog.ShowAlphaChannel)
+        if color.isValid():
+            self.brushColor = color
+
+    def zoom(self, zoom_level):
+        self.zoom_level = zoom_level
+        self.update()
+
+    def get_zoomed_image(self):
+        # Calculate the zoomed image based on the current zoom level
+        zoom_factor = self.zoom_level / 100.0
+        zoomed_size = QSizeF(self.image.width() * zoom_factor,
+                             self.image.height() * zoom_factor)
+
+        # Calculate the position of the zoomed image to center it within the widget
+        x = (self.width() - zoomed_size.width()) / 2
+        y = (self.height() - zoomed_size.height()) / 2
+
+        # Create a QRectF object to represent the visible area of the widget
+        visible_rect = QRectF(0, 0, self.width(), self.height())
+
+        # Create a QRectF object to represent the zoomed image
+        zoomed_rect = QRectF(x, y, zoomed_size.width(), zoomed_size.height())
+
+        # Create a QImage object for the zoomed image
+        zoomed_image = QImage(self.size(), QImage.Format_ARGB32)
+        zoomed_image.fill(Qt.transparent)
+
+        # Draw the zoomed image to the QImage object
+        painter = QPainter(zoomed_image)
+        painter.drawImage(zoomed_rect, self.image, visible_rect)
+        painter.end()
+
+        return zoomed_image
+
+    def wheelEvent(self, event):
+        # Handle mouse wheel events to zoom in and out
+        if event.angleDelta().y() > 0:
+            # Increase zoom level by 10%
+            self.zoom(min(self.zoom_level + 10, 400))
+        else:
+            # Decrease zoom level by 10%
+            self.zoom(max(self.zoom_level - 10, 10))

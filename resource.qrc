@@ -1,5 +1,13 @@
 <RCC>
   <qresource>
+    <file>images/brown.png</file>
+    <file>images/orange.jpg</file>
+    <file>images/pink.png</file>
+    <file>images/purpule.png</file>
+    <file>images/ellipse.png</file>
+    <file>images/hexagon.png</file>
+    <file>images/pentagon.png</file>
+    <file>images/triangle.png</file>
     <file>images/Screenshot (571).png</file>
     <file>images/air.png</file>
     <file>images/clighraphy.jpg</file>

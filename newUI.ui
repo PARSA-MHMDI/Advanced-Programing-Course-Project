@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
+    <width>698</width>
     <height>504</height>
    </rect>
   </property>
@@ -37,9 +37,12 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>1111</width>
+       <width>2000</width>
        <height>111</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 255, 255);</string>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -59,7 +62,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="1">
-         <widget class="QToolButton" name="clear_Buttonc">
+         <widget class="QToolButton" name="clear_Button">
           <property name="text">
            <string/>
           </property>
@@ -291,12 +294,85 @@
         <rect>
          <x>270</x>
          <y>0</y>
-         <width>121</width>
+         <width>176</width>
          <height>85</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
+        <item row="2" column="0" colspan="5">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Shapes</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QToolButton" name="hexagon_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/hexagon.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QToolButton" name="roundrect_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/roundedrectangle.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QToolButton" name="pentagon_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/pentagon.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
          <widget class="QToolButton" name="rect_Button">
           <property name="text">
            <string/>
@@ -317,7 +393,49 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QToolButton" name="line_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/line.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
+         <widget class="QToolButton" name="arrow_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/arrow.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
          <widget class="QToolButton" name="circul_Button">
           <property name="text">
            <string/>
@@ -339,13 +457,13 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QToolButton" name="arrow_Button">
+         <widget class="QToolButton" name="ellipse_Button">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>:/images/arrow.png</normalon>
+            <normalon>:/images/ellipse.png</normalon>
            </iconset>
           </property>
           <property name="iconSize">
@@ -360,13 +478,13 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QToolButton" name="roundrect_Button">
+         <widget class="QToolButton" name="triangle_Button">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>:/images/roundedrectangle.png</normalon>
+            <normalon>:/images/triangle.png</normalon>
            </iconset>
           </property>
           <property name="iconSize">
@@ -377,37 +495,6 @@
           </property>
           <property name="autoRaise">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QToolButton" name="line_Button">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/images/line.png</normalon>
-           </iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="autoRaise">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="3">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Shapes</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -416,22 +503,21 @@
       <widget class="QWidget" name="gridLayoutWidget_4">
        <property name="geometry">
         <rect>
-         <x>410</x>
+         <x>450</x>
          <y>0</y>
-         <width>140</width>
+         <width>212</width>
          <height>85</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="2">
-         <widget class="QToolButton" name="blue_Button">
+        <item row="1" column="3">
+         <widget class="QToolButton" name="orange_Button">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
-           <iconset>
-            <normalon>:/images/blue.png</normalon>
-           </iconset>
+           <iconset resource="resource.qrc">
+            <normaloff>:/images/orange.jpg</normaloff>:/images/orange.jpg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -444,35 +530,14 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QToolButton" name="back_Button">
+        <item row="0" column="1">
+         <widget class="QToolButton" name="green_Button">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>:/images/black.png</normalon>
-           </iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="autoRaise">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QToolButton" name="all_color_Button">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/images/colorpalette.png</normalon>
+            <normalon>:/images/green.png</normalon>
            </iconset>
           </property>
           <property name="iconSize">
@@ -507,35 +572,14 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QToolButton" name="green_Button">
+        <item row="0" column="2">
+         <widget class="QToolButton" name="blue_Button">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>:/images/green.png</normalon>
-           </iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="autoRaise">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QToolButton" name="white_Button">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/images/Screenshot (571).png</normalon>
+            <normalon>:/images/blue.png</normalon>
            </iconset>
           </property>
           <property name="iconSize">
@@ -570,7 +614,109 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0" colspan="4">
+        <item row="0" column="4">
+         <widget class="QToolButton" name="back_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/black.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QToolButton" name="white_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/Screenshot (571).png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QToolButton" name="pink_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/images/pink.png</normaloff>:/images/pink.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QToolButton" name="brown_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/images/brown.png</normaloff>:/images/brown.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="purple_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="resource.qrc">
+            <normaloff>:/images/purpule.png</normaloff>:/images/purpule.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="6">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>Colors</string>
@@ -580,12 +726,33 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="4">
+         <widget class="QToolButton" name="all_color_Button">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/images/colorpalette.png</normalon>
+           </iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="Line" name="line_3">
        <property name="geometry">
         <rect>
-         <x>390</x>
+         <x>440</x>
          <y>0</y>
          <width>16</width>
          <height>91</height>
@@ -940,17 +1107,57 @@
       <widget class="QWidget" name="gridLayoutWidget_7">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>130</x>
          <y>0</y>
-         <width>401</width>
+         <width>331</width>
          <height>81</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_7">
+        <item row="2" column="4">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>other2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Black and White</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="3">
          <widget class="QLabel" name="label_12">
           <property name="text">
            <string>other1</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Orginal </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Invert</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -975,46 +1182,6 @@
           </property>
           <property name="autoRaise">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_15">
-          <property name="text">
-           <string>Orginal </string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="label_14">
-          <property name="text">
-           <string>Black and White</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="label_13">
-          <property name="text">
-           <string>Invert</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="4">
-         <widget class="QLabel" name="label_16">
-          <property name="text">
-           <string>other2</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -1081,6 +1248,76 @@
         <enum>Qt::Vertical</enum>
        </property>
       </widget>
+      <widget class="Line" name="line_6">
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>0</y>
+         <width>20</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QWidget" name="gridLayoutWidget_6">
+       <property name="geometry">
+        <rect>
+         <x>480</x>
+         <y>0</y>
+         <width>111</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>9</number>
+        </property>
+        <item row="2" column="0" colspan="2">
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>Resize Image</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>Width:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="width_spinBox"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string>Height:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="height_spinBox"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -1090,7 +1327,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>642</width>
+     <width>698</width>
      <height>21</height>
     </rect>
    </property>
@@ -1107,7 +1344,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
+    <addaction name="actionredo"/>
     <addaction name="actionErase"/>
    </widget>
    <widget class="QMenu" name="menuBrushSize">
@@ -1178,6 +1415,22 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSave"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionredo"/>
+   <addaction name="actionClear"/>
+   <addaction name="actioncolor_palette"/>
   </widget>
   <action name="actionSave">
    <property name="icon">
@@ -1433,23 +1686,43 @@
    </property>
   </action>
   <action name="actionOrginal">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/image.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Orginal</string>
    </property>
   </action>
   <action name="actionBlack_and_White">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/BlackandWhite.png</normaloff>:/images/BlackandWhite.png</iconset>
+   </property>
    <property name="text">
     <string>Black and White</string>
    </property>
   </action>
   <action name="actionInvert">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/invert_color.png</normaloff>:/images/invert_color.png</iconset>
+   </property>
    <property name="text">
     <string>Invert\</string>
    </property>
   </action>
-  <action name="actionRedo">
+  <action name="actionredo">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/redo.png</normaloff>:/images/redo.png</iconset>
+   </property>
    <property name="text">
-    <string>Redo</string>
+    <string>redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>
