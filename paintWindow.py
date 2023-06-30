@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog
-from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QBrush, QCloseEvent
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog, QVBoxLayout
+from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QTransform, QColor
 from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSizeF
 from newUI import Ui_MainWindow
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
@@ -18,7 +18,7 @@ class Window(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle("Paint with PyQt5")
+        self.setWindowTitle("Paint")
         self.setGeometry(200, 100, 1400, 850)
 
         self.image = QImage(self.size(), QImage.Format.Format_RGB16)
@@ -162,14 +162,21 @@ class Window(QMainWindow):
         self.ui.clalligraphy_Button.clicked.connect(self.calligra_brush)
         self.ui.crayon_Button.clicked.connect(self.crayon_brush)
         self.ui.size_Slider.valueChanged.connect(self.value_changed)
-        self.ui.crayon_Button.clicked.connect(self.flip_Button)
+        self.ui.flip_Button.clicked.connect(self.flip)
         self.ui.loadimage_Button.clicked.connect(self.change_backgound_picutre)
-        self.ui.crop_Button.clicked.connect(self.crop)
+        self.ui.flip_up.clicked.connect(self.flip_up)
         self.ui.rotate_Button.clicked.connect(self.rotate)
         self.ui.loadimage_Button_2.clicked.connect(
             lambda: self.apply_filter("orginal"))
+        self.ui.blackwhite_Button.clicked.connect(
+            lambda: self.apply_filter("BW"))
         self.ui.invert_Button.clicked.connect(
             lambda: self.apply_filter("invert"))
+        self.ui.sepia_Button.clicked.connect(
+            lambda: self.apply_filter("sepia"))
+        self.ui.HDR_Button.clicked.connect(
+            lambda: self.apply_filter("HDR"))
+        self.ui.resize_button.clicked.connect(self.resize_button)
 
         # =================== Change UI ================================
         # Adding some labels to bottom toolbar
@@ -212,6 +219,17 @@ class Window(QMainWindow):
         self.ui.height_spinBox.setStyleSheet(
             "background-color: rgb(255, 255, 255);")
 
+        # change fram and tabbar size
+        self.ui.frame.setGeometry(
+            0, 0, self.size().width(), 112)
+
+        # chage button back_ground
+        self.ui.resize_button.setStyleSheet(
+            "background-color: rgb(220, 220, 220);")
+
+        self.ui.width_spinBox.setRange(0, 10000)
+        self.ui.height_spinBox.setRange(0, 10000)
+
         # ===================================================
 
     def value_changed(self, value):
@@ -224,7 +242,9 @@ class Window(QMainWindow):
         self.image_path, _ = file_dialog.getOpenFileName(
             self, "Select Image", "", "Image Files (*.png *.jpg *.jpeg)")
         loaded_image = QtGui.QImage(self.image_path)
-        self.image = loaded_image.scaled(self.size())
+        # self.image = loaded_image
+        self.image = loaded_image.scaled(
+            self.size().width() - 100, self.size().height())
         self.update()
         # For Exit warrning
 
@@ -295,13 +315,55 @@ class Window(QMainWindow):
             self.ui.length_label.setText(f"Diameter is: {Diameter}")
 
     def apply_filter(self, mood):
+        """This function applies filters to images
+
+        Args:
+            mood (str): which filter
+            path (srt): where is the image
+        """
         if mood == "BW":
             self.image = self.image.convertToFormat(
                 QtGui.QImage.Format_Grayscale8)
+
         elif mood == "orginal":
-            pass
+            loaded_image = QtGui.QImage(self.image_path)
+            self.image = loaded_image.scaled(self.size())
         elif mood == "invert":
-            pass
+            inverted_image = self.image.copy()
+            for y in range(inverted_image.height()):
+                for x in range(inverted_image.width()):
+                    pixel_color = QColor(inverted_image.pixel(x, y))
+                    inverted_color = QColor(
+                        255 - pixel_color.red(), 255 - pixel_color.green(), 255 - pixel_color.blue())
+                    inverted_image.setPixel(x, y, inverted_color.rgb())
+            self.image = inverted_image
+        elif mood == "sepia":
+            sepia_image = self.image.copy()
+            for y in range(sepia_image.height()):
+                for x in range(sepia_image.width()):
+                    pixel_color = QColor(sepia_image.pixel(x, y))
+                    red = int(0.393 * pixel_color.red() + 0.769 *
+                              pixel_color.green() + 0.189 * pixel_color.blue())
+                    green = int(0.349 * pixel_color.red() + 0.686 *
+                                pixel_color.green() + 0.168 * pixel_color.blue())
+                    blue = int(0.272 * pixel_color.red() + 0.534 *
+                               pixel_color.green() + 0.131 * pixel_color.blue())
+                    sepia_color = QColor(min(red, 255), min(
+                        green, 255), min(blue, 255))
+                    sepia_image.setPixel(x, y, sepia_color.rgb())
+            self.image = sepia_image
+
+        elif mood == "HDR":
+            hdr_image = self.image.copy()
+            for y in range(hdr_image.height()):
+                for x in range(hdr_image.width()):
+                    pixel_color = QColor(hdr_image.pixel(x, y))
+                    red = min(2 * pixel_color.red(), 255)
+                    green = min(2 * pixel_color.green(), 255)
+                    blue = min(2 * pixel_color.blue(), 255)
+                    hdr_color = QColor(red, green, blue)
+                    hdr_image.setPixel(x, y, hdr_color.rgb())
+            self.image = hdr_image
         self.update()
 
     # End Parsa added======================================
@@ -351,7 +413,7 @@ class Window(QMainWindow):
 
             self.endPoint = event.pos()
             self.radius = int(math.sqrt((self.endPoint.x() - self.startPoint.x())
-                              ** 2 + (self.endPoint.y() - self.startPoint.y()) ** 2) / 2)
+                                        ** 2 + (self.endPoint.y() - self.startPoint.y()) ** 2) / 2)
 
             # calculate center point as midpoint of start and end points
             self.center_point = QPointF((self.startPoint.x(
@@ -415,14 +477,27 @@ class Window(QMainWindow):
     def text(self):
         pass
 
-    def flip_Button(self):
-        pass
+    def flip(self):
+        self.image = self.image.mirrored(vertical=False, horizontal=True)
+        self.update()
 
-    def crop(self):
-        pass
+    def flip_up(self):
+        self.image = self.image.mirrored(vertical=True, horizontal=False)
+        self.update()
 
     def rotate(self):
-        pass
+        angle = 90  # Define the rotation angle
+        transform = QTransform().rotate(angle)
+        self.image = self.image.transformed(transform)
+        self.update()
+
+    def resize_button(self):
+        width = self.ui.width_spinBox.value()
+        heigth = self.ui.height_spinBox.value()
+
+        self.image = self.image.scaled(width, heigth)
+        self.update()
+
     # End Parsa Added
 
     def save(self):
