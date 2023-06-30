@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog, QVBoxLayout, QLineEdit, QTextEdit
 from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QTransform, QColor
 from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSizeF
 from newUI import Ui_MainWindow
@@ -51,6 +51,7 @@ class Window(QMainWindow):
         self.pentagon_tool = False
         self.hexagon_tool = False
         self.shape_flag = False
+        self.text_flag = False
 
         # brushes
         self.round_brush = QPainterPath()
@@ -124,7 +125,7 @@ class Window(QMainWindow):
         self.ui.clear_Button.clicked.connect(self.clear)
         self.ui.undo_Button.clicked.connect(self.undo)
         self.ui.save_Button.clicked.connect(self.save)
-        self.ui.text_Button.clicked.connect(self.text)
+        self.ui.text_Button.clicked.connect(self.text_mode)
         self.ui.erase_Button.clicked.connect(self.eraser)
         self.ui.line_Button.clicked.connect(self.set_line_tool)
         self.ui.rect_Button.clicked.connect(self.set_rectangle_tool)
@@ -371,15 +372,38 @@ class Window(QMainWindow):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drawing = True
-            self.lastPoint = event.pos()
 
             self.startPoint = event.pos()
+
+            self.lastPoint = event.pos()
 
         self.undo_stack.append(self.image.copy())
 
         # This line is for updating mouse position
         self.pos_label.setText(
             f" Mouse position is: X:{event.pos().x()}, Y:{event.pos().y()}")
+
+        if self.text_flag:
+            text, ok = QtWidgets.QInputDialog.getText(
+                self, 'Enter Text', 'Enter your text:')
+            if ok:
+                # Create a text box at the clicked position
+                self.text_box = QLineEdit(self)
+                self.text_box.setText(text)
+                self.text_box.move(event.pos())
+                self.text_box.returnPressed.connect(
+                    lambda: self.draw_text(self.text_box))
+                self.text_box.show()
+            self.text_flag = False
+
+    def draw_text(self, text_box):
+        # Draw the text on the canvas
+        painter = QPainter(self.image)
+        painter.setPen(QPen(self.brushColor, self.brushSize,
+                       Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        painter.drawText(text_box.pos(), text_box.text())
+        painter.end()
+        self.update()
 
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.LeftButton:
@@ -442,6 +466,10 @@ class Window(QMainWindow):
                 self.draw_hexagon(self.startPoint, self.endPoint)
             elif self.pentagon_tool:
                 self.draw_pentagon(self.startPoint, self.endPoint)
+        # for add text
+        if self.text_flag:
+            rect = QRect(self.endPoint, QPoint())  # Convert QPoint to QRect
+            self.text_edit.setGeometry(rect)
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -474,8 +502,14 @@ class Window(QMainWindow):
 
     # Parsa Added
 
+    def text_mode(self):
+        # Set the text_flag to True when the "Text" button is clicked
+        self.text_flag = True
+
     def text(self):
-        pass
+        self.set_default()
+        self.text_edit = QTextEdit(self)
+        self.text_flag = True
 
     def flip(self):
         self.image = self.image.mirrored(vertical=False, horizontal=True)
@@ -510,6 +544,12 @@ class Window(QMainWindow):
 
     def clear(self):
         self.image.fill(Qt.GlobalColor.white)
+        # Clear the text
+        self.text_box.clear()
+        # self.text_box.setPlainText("")  # Clear the text edit
+        self.text_box.hide()  # Hide the text edit widget
+
+        self.text_flag = False  # Reset the text flag
         self.undo_stack = []
         self.update()
 
