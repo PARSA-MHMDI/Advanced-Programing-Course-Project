@@ -116,8 +116,6 @@ class Window(QMainWindow):
         self.ui.redo_Button.clicked.connect(self.redo)
         self.ui.all_color_Button.clicked.connect(self.selectColor)
         self.ui.zoom_Button.clicked.connect(lambda: self.zoom(110))
-
-    # Parsa added ========================================
         self.ui.actioncolor_palette.triggered.connect(self.selectColor)
         self.ui.actionredo.triggered.connect(self.redo)
         self.ui.actionBlack_and_White.triggered.connect(
@@ -156,7 +154,6 @@ class Window(QMainWindow):
             lambda: self.change_brush_color(Qt.GlobalColor.darkYellow))
         self.ui.lightGray_Button.clicked.connect(
             lambda: self.change_brush_color(Qt.GlobalColor.lightGray))
-
         self.ui.pen_Button_2.clicked.connect(self.solid_brush)
         self.ui.air_Button.clicked.connect(self.air_brush)
         self.ui.oil_Button.clicked.connect(self.oil_brush)
@@ -180,7 +177,6 @@ class Window(QMainWindow):
         self.ui.resize_button.clicked.connect(self.resize_button)
 
         # =================== Change UI ================================
-        # Adding some labels to bottom toolbar
         self.ui.toolBar.addSeparator()
 
         self.ui.size_label_toolbar = QtWidgets.QLabel("Size is: 1 px")
@@ -231,8 +227,6 @@ class Window(QMainWindow):
         self.ui.width_spinBox.setRange(0, 10000)
         self.ui.height_spinBox.setRange(0, 10000)
 
-        # ===================================================
-
     def value_changed(self, value):
         self.brushSize = value
         self.ui.size_label_toolbar.setText(f"Size is: {value} px")
@@ -243,7 +237,6 @@ class Window(QMainWindow):
         self.image_path, _ = file_dialog.getOpenFileName(
             self, "Select Image", "", "Image Files (*.png *.jpg *.jpeg)")
         loaded_image = QtGui.QImage(self.image_path)
-        # self.image = loaded_image
         self.image = loaded_image.scaled(
             self.size().width() - 100, self.size().height())
         self.update()
@@ -366,8 +359,6 @@ class Window(QMainWindow):
                     hdr_image.setPixel(x, y, hdr_color.rgb())
             self.image = hdr_image
         self.update()
-
-    # End Parsa added======================================
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -502,15 +493,8 @@ class Window(QMainWindow):
             self.image = next_image.copy()
             self.update()
 
-    # Parsa Added
-
     def text_mode(self):
         # Set the text_flag to True when the "Text" button is clicked
-        self.text_flag = True
-
-    def text(self):
-        self.set_default()
-        self.text_edit = QTextEdit(self)
         self.text_flag = True
 
     def flip(self):
@@ -533,8 +517,6 @@ class Window(QMainWindow):
 
         self.image = self.image.scaled(width, heigth)
         self.update()
-
-    # End Parsa Added
 
     def save(self):
         filePath, _ = QFileDialog.getSaveFileName(
