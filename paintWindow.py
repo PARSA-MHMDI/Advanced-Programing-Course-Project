@@ -1,14 +1,12 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog, QVBoxLayout, QLineEdit, QTextEdit
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QColorDialog, QLineEdit, QTextEdit
 from PyQt5.QtGui import QImage, QPainter, QPen, QCursor, QPixmap, QPainterPath, QTransform, QColor
 from PyQt5.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QSizeF
 from newUI import Ui_MainWindow
 from brushes import SolidBrush, Airbrush, CalligraphyBrush, OilBrush, CrayonBrush
 from shapes import Rectangle, Circle, StraightLine, Arrow, RoundedRectangle, Ellipse, Triangle, Pentagon, Hexagon
 import math
-import cv2
-import numpy as np
 
 
 class Window(QMainWindow):
@@ -21,6 +19,7 @@ class Window(QMainWindow):
         self.setWindowTitle("Paint")
         self.setGeometry(200, 100, 1400, 850)
 
+        # load main image
         self.image = QImage(self.size(), QImage.Format.Format_RGB16)
         self.image.fill(Qt.GlobalColor.white)
         self.image_path = "./images/save.png"
